@@ -6,33 +6,39 @@ package frc.robot.subsystems;
 
 import frc.robot.Constants;
 
+import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.AbsoluteEncoderConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ShooterSubsystem extends SubsystemBase {
-  private SparkMax sparkMaxShooterMotor = new SparkMax(5, MotorType.kBrushless);
+  private SparkMax sparkMaxShooterMotor = new SparkMax(3, MotorType.kBrushless);
   private SparkClosedLoopController pidController = sparkMaxShooterMotor.getClosedLoopController();
   private SparkMaxConfig config = new SparkMaxConfig();
-
+  //private SparkMaxConfig.closedLoop.feedbackSensor canEncoder = sparkMaxShooterMotor.getAbsoluteEncoder();
+  
   /** Creates a new ExampleSubsystem. */
   public ShooterSubsystem() {
     config.closedLoop
                     .pid(Constants.ShooterConstant.kP, Constants.ShooterConstant.kI , Constants.ShooterConstant.kD)
-                    .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+                    .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
                     .maxOutput(Constants.ShooterConstant.kMaxOutput)
                     .minOutput(Constants.ShooterConstant.kMinOutput);
 
       sparkMaxShooterMotor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
-    
+      
   }
  
   /**
@@ -49,10 +55,10 @@ public class ShooterSubsystem extends SubsystemBase {
         });
   }
 
-  public Command setGoal(double rpm){
+  public Command setGoal(double pos){
     return run(
       () -> {
-            pidController.setReference(rpm, ControlType.kVelocity);
+            pidController.setReference(pos, ControlType.kPosition);
       }
     );
   }
@@ -70,6 +76,8 @@ public class ShooterSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    //System.out.print("Encoder Position:");
+    //System.out.print(canEncoder.getPosition());
   }
 
   @Override

@@ -18,8 +18,8 @@ public final class Constants {
 
   }
   public static class ShooterConstant{
-    public static double kP = 0.01, kI = 0, kD = 0, kIz = 0;
-    public static double kMinOutput = -1, kMaxOutput = 1;
+    public static double kP = 0.0005, kI = 0.0, kD = 0.0005, kIz = 0;
+    public static double kMinOutput = 0, kMaxOutput = 1;
   }
   
 } 
